@@ -28,6 +28,7 @@ const LINE_WEIGHT = 8
 var IMG_SIZE = 500
 var IMG_SIZE_FL = float64(500)
 var IMG_SIZE_SQ = 250000
+var CIRCLE_DIAMETER = 500.0
 var Pin_coords = []Coord{}
 var SourceImage = []float64{}
 var Line_cache_y = [][]float64{}
@@ -42,6 +43,13 @@ func init(){
 }
 
 func main() {
+	if len(os.Args) > 1 {
+		val, err := strconv.Atoi(os.Args[1])
+		if err == nil {
+			CIRCLE_DIAMETER = float64(val)
+		}
+	}
+
 	SourceImage = importPictureAndGetPixelArray()
 	fmt.Println("Hello, world.")
 
@@ -55,6 +63,7 @@ func main() {
 
 	fmt.Println("End")
 }
+
 
 func generateStringArt()
 
@@ -97,11 +106,14 @@ func calculatePinCoords() {
 	pin_coords := [PINS]Coord{}
 
 	center := float64(IMG_SIZE / 2)
-	radius := float64(IMG_SIZE/2 - 1)
+	radius := CIRCLE_DIAMETER / 2 // مقدار جدید به جای `IMG_SIZE/2 - 1`
 
-	for i:=0;i<PINS;i++ {
+	for i:=0; i<PINS; i++ {
 		angle := 2 * math.Pi * float64(i) / float64(PINS)
-		pin_coords[i] = Coord{X : math.Floor(center + radius*math.Cos(angle)), Y : math.Floor(center + radius*math.Sin(angle))}
+		pin_coords[i] = Coord{
+			X: math.Floor(center + radius * math.Cos(angle)),
+			Y: math.Floor(center + radius * math.Sin(angle)),
+		}
 	}
 
 	Pin_coords = pin_coords[:]
